@@ -20,10 +20,12 @@ builder.Services.AddEntityFrameworkNpgsql()
 
 var app = builder.Build();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
     SeedData(app);
 
-void SeedData(IHost app)
+async void SeedData(IHost app)
 {
     var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
@@ -33,7 +35,7 @@ void SeedData(IHost app)
         service.SeedDataContext();
     }
 }
-
+await app.RunAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
